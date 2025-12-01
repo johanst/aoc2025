@@ -1,8 +1,22 @@
 #!/usr/bin/env python3
 
-def main():
+def part1():
+    pos = 50
+    zeros = 0
     with open("input.txt", "r") as file:
         for line in file:
-            print(line.strip())
+            l = line.strip()
+            pos += 100
+            if l[0] == 'L':
+                pos -= int(l[1:])
+            elif l[0] == 'R':
+                pos += int(l[1:])
+            else:
+                assert "wtf"
+            pos = pos % 100
+            # print(f"{l}, => pos = {pos}")
+            if pos == 0:
+                zeros = zeros + 1
+    print(f"Part1: Password = {zeros}")
 
-main()
+part1()
