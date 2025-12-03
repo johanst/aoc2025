@@ -36,13 +36,25 @@ def part1(fname):
         acc = acc + mx
     print(f"Sum: {acc}")
 
-
+def get_max_jolt_12(a):
+    jolt = 0
+    for ndig in range(12):
+        # 0 - 11
+        for i, n in enumerate(a[:ndig-12])
+    for i in range(11, -1, -1):
+        print(i)
+    # print("hej")
+    return 0
 
 def part2(fname):
-    rs = get_banks(fname)
+    aa = get_banks(fname)
     acc = 0
+    for a in aa:
+        mx = get_max_jolt_12(a)
+        # print(mx)
+        acc = acc + mx
     print(f"Sum: {acc}")
 
 
-part1("input.txt")
-# part2("input.txt")
+# part1("input.txt")
+part2("ex.txt")
