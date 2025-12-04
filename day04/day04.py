@@ -12,7 +12,8 @@ def part1(fname):
     aa = get_grid(fname)
     ly = len(aa)
     lx = len(aa[0])
-    poss = set()
+    # poss = set()
+    acc = 0
     for y0 in range(ly):
         for x0 in range(lx):
             count = 0
@@ -23,15 +24,24 @@ def part1(fname):
                 for dx in range(-1, 2):
                     x = x0 + dx
                     y = y0 + dy
-                    if x < 0 or x >= lx or y < 0 or y >= ly:
+                    if x < 0 or x >= lx or y < 0 or y >= ly or (dx == 0 and dy == 0):
                         continue
                     if aa[y][x] == '@':
                         count = count + 1
-                        cposs.add((y, x))
+                        # cposs.add((y0, x0))
             if count < 4:
-                for p in cposs:
-                    poss.add(p)
-    acc = len(poss)
+                acc = acc + 1
+                # print(y0,x0,cposs)
+                # for p in cposs:
+                #     poss.add(p)
+    # acc = len(poss)
+    # for y in range(ly):
+    #     for x in range(lx):
+    #         if (y,x) in poss:
+    #             print('x', end='')
+    #         else:
+    #             print(aa[y][x], end='')
+    #     print()
     print(f"Sum: {acc}")
 
 def part2(fname):
@@ -40,5 +50,5 @@ def part2(fname):
     print(f"Sum: {acc}")
 
 
-part1("ex.txt")
+part1("input.txt")
 # part2("input.txt")
