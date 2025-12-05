@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import heapq
 
 def get_data(fname):
     rs = []
@@ -76,5 +77,28 @@ def part2(fname):
         acc = acc + end - beg + 1
     print(f"Sum: {acc}")
 
+# 344306344403172
+# 330802486483965
+def part2_again(fname):
+    rs, _ = get_data(fname)
+    heapq.heapify(rs)
+    ro = []
+    while rs:
+        rg = heapq.heappop(rs)
+        print(f"rg:          {rg}")
+        while rs:
+            rgn = rs[0]
+            print(f"       rgn = {rgn}")
+            if rgn[0] > rg[1]:
+                print("    done")
+                break
+            rgn = heapq.heappop(rs)
+            rg = (rg[0], rgn[1])
+            print(f"    rg_new = {rg}")
+        ro.append(rg)
+    acc = sum([rg[1] - rg[0] + 1 for rg in ro])
+    print(f"Sum: {acc}")
+
 # part1("input.txt")
-part2("input.txt")
+# part2("input.txt")
+part2_again("input.txt")
