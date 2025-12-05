@@ -31,9 +31,33 @@ def part1(fname):
     print(f"Sum: {acc}")
 
 def part2(fname):
-    rs, aa = get_data(fname)
+    rs, _ = get_data(fname)
     acc = 0
+    ro = rs
+    for r in rs:
+        rn = []
+        for rr in ro:
+            if r[1] < rr[0]:
+                # r to the left of rr, keep both
+                rn.append(r)
+                rn.append(rr)
+            elif r[0] > rr[1]:
+                # r to the right of rr, keep both
+                rn.append(r)
+                rn.append(rr)
+            elif r[0] >= rr[0] and r[1] <= rr[1]:
+                # r is contained by rr, only keep rr
+                rn.append(rr)
+            elif r[0] <= rr[0] and r[0] >= rr[1]:
+                # r constains rr, only keep r
+                rn.append(r)
+            else:
+                # overlapping, so merge
+                rn.append((min(r[0], rr[0]), (max(r[1], rr[1])))
+        ro = rn
+    for beg, end in ro:
+        acc = acc + end - beg + 1
     print(f"Sum: {acc}")
 
-part1("input.txt")
-# part2("input.txt")
+# part1("input.txt")
+part2("ex.txt")
