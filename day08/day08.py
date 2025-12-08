@@ -45,7 +45,7 @@ def part1(fname, n):
             for bx in nets[n2]:
                 nets[n1].add(bx)
             del nets[n2]
-    print(nets)
+    # print(nets)
     ns = []
     for net in nets.values():
         ns.append(len(net))
@@ -55,9 +55,48 @@ def part1(fname, n):
 
 def part2(fname):
     a = get_data(fname)
-    acc = 0
+
+    # get dists
+    d = []
+    for i in range(len(a) - 1):
+        for j in range(i+1, len(a)):
+            dist = 0
+            for c1, c2 in zip(a[i], a[j]):
+                dist = dist + (c1 - c2) * (c1 - c2)
+            d.append((dist, i, j))
+    d.sort()
+
+    nets = {}
+    bx2net = {}
+    for i in range(len(a)):
+        s = set()
+        s.add(a[i])
+        nets[i] = s
+    # print(nets)
+    old_len = -1
+    xx = 0
+    for i in range(len(d)):
+        bx1, bx2 = a[d[i][1]], a[d[i][2]]
+        n1, n2 = -1, -1
+        for sidx, s in nets.items():
+            if bx1 in s:
+                n1 = sidx
+            if bx2 in s:
+                n2 = sidx
+            if n1 != -1 and n2 != -1:
+                break
+        assert n1 != -1 and n2 != -1
+        if n1 != n2:
+            for bx in nets[n2]:
+                nets[n1].add(bx)
+            del nets[n2]
+        if len(nets) == 1:
+            xx = bx1[0] * bx2[0]
+            break
+    # print(nets)
+    acc = xx
     print(f"Sum: {acc}")
 
 # part1("ex.txt", 10)
 part1("input.txt", 1000)
-# part2("input.txt")
+part2("input.txt")
