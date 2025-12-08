@@ -5,7 +5,7 @@ def get_data(fname):
     with open(fname, "r") as file:
         for line in file:
             ws = line.strip().split(',')
-            cs = [int(w) for w in ws]
+            cs = (int(ws[0]), int(ws[1]), int(ws[2]))
             a.append(cs)
             assert(len(cs) == 3)
     return a
@@ -27,22 +27,26 @@ def part1(fname, n):
     nets = {}
     bx2net = {}
     for i in range(len(a)):
-        nets[cidcnt] = set([i])
-        bx2net[i] = cidcnt
+        s = set()
+        s.add(a[i])
+        nets[cidcnt] = s
+        bx2net[a[i]] = cidcnt
         cidcnt = cidcnt + 1
     # print(nets)
+    # print(bx2net)
     for i in range(n):
-        bx1, bx2 = d[i][1], d[i][2]
+        bx1, bx2 = a[d[i][1]], a[d[i][2]]
         # print(a[bx1], a[bx2])
         bx1nid = bx2net[bx1]
         bx2nid = bx2net[bx2]
+        print(bx1nid, bx2nid)
         if bx1nid != bx2nid:
             print(f"join {bx1}|{bx2} => del {bx2nid}")
             for bx in nets[bx2nid]:
                 nets[bx1nid].add(bx)
             bx2net[bx2] = bx1nid
             del nets[bx2nid]
-    # print(nets)
+    print(nets)
     ns = []
     for net in nets.values():
         ns.append(len(net))
@@ -55,5 +59,5 @@ def part2(fname):
     acc = 0
     print(f"Sum: {acc}")
 
-part1("input.txt", 1000)
+part1("ex.txt", 10)
 # part2("input.txt")
