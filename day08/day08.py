@@ -27,18 +27,27 @@ def part1(fname, n):
     nets = {}
     bx2net = {}
     for i in range(len(a)):
-        nets[cidcnt] = i
+        nets[cidcnt] = set([i])
         bx2net[i] = cidcnt
         cidcnt = cidcnt + 1
-    print(nets)
+    # print(nets)
     for i in range(n):
         bx1, bx2 = d[i][1], d[i][2]
         # print(a[bx1], a[bx2])
-        bx1id = bx2net[bx1]
-        bx2id = bx2net[bx2]
-        for bx in
-
-    acc = 0
+        bx1nid = bx2net[bx1]
+        bx2nid = bx2net[bx2]
+        if bx1nid != bx2nid:
+            print(f"join {bx1}|{bx2} => del {bx2nid}")
+            for bx in nets[bx2nid]:
+                nets[bx1nid].add(bx)
+            bx2net[bx2] = bx1nid
+            del nets[bx2nid]
+    # print(nets)
+    ns = []
+    for net in nets.values():
+        ns.append(len(net))
+    ns.sort(reverse=True)
+    acc = ns[0] * ns[1] * ns[2]
     print(f"Sum: {acc}")
 
 def part2(fname):
@@ -46,5 +55,5 @@ def part2(fname):
     acc = 0
     print(f"Sum: {acc}")
 
-part1("ex.txt", 10)
+part1("input.txt", 1000)
 # part2("input.txt")
