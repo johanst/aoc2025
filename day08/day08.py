@@ -4,59 +4,47 @@ def get_data(fname):
     a = []
     with open(fname, "r") as file:
         for line in file:
-            a.append(line.strip())
-    return a, a[0].find('S')
+            ws = line.strip().split(',')
+            cs = [int(w) for w in ws]
+            a.append(cs)
+            assert(len(cs) == 3)
+    return a
 
-def part1(fname):
-    a, s = get_data(fname)
+def part1(fname, n):
+    a = get_data(fname)
+
+    # get dists
+    d = []
+    for i in range(len(a) - 1):
+        for j in range(i+1, len(a)):
+            dist = 0
+            for c1, c2 in zip(a[i], a[j]):
+                dist = dist + (c1 - c2) * (c1 - c2)
+            d.append((dist, i, j))
+    d.sort()
+
+    cidcnt = 0
+    nets = {}
+    bx2net = {}
+    for i in range(len(a)):
+        nets[cidcnt] = i
+        bx2net[i] = cidcnt
+        cidcnt = cidcnt + 1
+    print(nets)
+    for i in range(n):
+        bx1, bx2 = d[i][1], d[i][2]
+        # print(a[bx1], a[bx2])
+        bx1id = bx2net[bx1]
+        bx2id = bx2net[bx2]
+        for bx in
+
     acc = 0
-    b = set([s])
-    for r in a[1:]:
-        bn = set()
-        beg = 0
-        while True:
-            idx = r.find('^', beg)
-            if idx == -1:
-                break
-            if idx in b:
-                acc = acc + 1
-                b.remove(idx)
-                bn.add(idx-1)
-                bn.add(idx+1)
-            beg = idx + 1
-        b = b | bn
     print(f"Sum: {acc}")
 
 def part2(fname):
-    a, s = get_data(fname)
-    b = {s: 1} # pos: number_of_paths for last row
-    for r in a[1:]:
-        bn = {}
-        beg = 0
-        while True:
-            idx = r.find('^', beg)
-            if idx == -1:
-                break
-            if idx in b:
-                pnum = b[idx]
-                del b[idx]
-                if idx - 1 in bn:
-                    bn[idx-1] = bn[idx-1] + pnum
-                else:
-                    bn[idx-1] = pnum
-                if idx + 1 in bn:
-                    bn[idx+1] = bn[idx+1] + pnum
-                else:
-                    bn[idx+1] = pnum
-            beg = idx + 1
-        for pos, pnum in b.items():
-            if pos in bn:
-                bn[pos] = bn[pos] + pnum
-            else:
-                bn[pos] = pnum
-        b = bn
-    acc = sum([v for v in b.values()])
+    a = get_data(fname)
+    acc = 0
     print(f"Sum: {acc}")
 
-part1("input.txt")
-part2("input.txt")
+part1("ex.txt", 10)
+# part2("input.txt")
