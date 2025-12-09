@@ -5,98 +5,27 @@ def get_data(fname):
     with open(fname, "r") as file:
         for line in file:
             ws = line.strip().split(',')
-            cs = (int(ws[0]), int(ws[1]), int(ws[2]))
+            cs = (int(ws[0]), int(ws[1]))
             a.append(cs)
-            assert(len(cs) == 3)
+            assert(len(cs) == 2)
     return a
 
-def part1(fname, n):
+def part1(fname):
     a = get_data(fname)
 
     # get dists
     d = []
     for i in range(len(a) - 1):
         for j in range(i+1, len(a)):
-            dist = 0
-            for c1, c2 in zip(a[i], a[j]):
-                dist = dist + (c1 - c2) * (c1 - c2)
-            d.append((dist, i, j))
-    d.sort()
+            size = abs(((a[i][0]-a[j][0])) + 1)*(abs((a[i][1]-a[j][1]))+1)
+            d.append((size, i, j))
+    d.sort(reverse=True)
+    print(f"Largest: {d[0][0]}")
 
-    nets = {}
-    bx2net = {}
-    for i in range(len(a)):
-        s = set()
-        s.add(a[i])
-        nets[i] = s
-    # print(nets)
-    for i in range(n):
-        bx1, bx2 = a[d[i][1]], a[d[i][2]]
-        n1, n2 = -1, -1
-        for sidx, s in nets.items():
-            if bx1 in s:
-                n1 = sidx
-            if bx2 in s:
-                n2 = sidx
-            if n1 != -1 and n2 != -1:
-                break
-        assert n1 != -1 and n2 != -1
-        if n1 != n2:
-            for bx in nets[n2]:
-                nets[n1].add(bx)
-            del nets[n2]
-    # print(nets)
-    ns = []
-    for net in nets.values():
-        ns.append(len(net))
-    ns.sort(reverse=True)
-    acc = ns[0] * ns[1] * ns[2]
-    print(f"Sum: {acc}")
 
 def part2(fname):
     a = get_data(fname)
+    print("hej")
 
-    # get dists
-    d = []
-    for i in range(len(a) - 1):
-        for j in range(i+1, len(a)):
-            dist = 0
-            for c1, c2 in zip(a[i], a[j]):
-                dist = dist + (c1 - c2) * (c1 - c2)
-            d.append((dist, i, j))
-    d.sort()
-
-    nets = {}
-    bx2net = {}
-    for i in range(len(a)):
-        s = set()
-        s.add(a[i])
-        nets[i] = s
-    # print(nets)
-    old_len = -1
-    xx = 0
-    for i in range(len(d)):
-        bx1, bx2 = a[d[i][1]], a[d[i][2]]
-        n1, n2 = -1, -1
-        for sidx, s in nets.items():
-            if bx1 in s:
-                n1 = sidx
-            if bx2 in s:
-                n2 = sidx
-            if n1 != -1 and n2 != -1:
-                break
-        assert n1 != -1 and n2 != -1
-        if n1 != n2:
-            for bx in nets[n2]:
-                nets[n1].add(bx)
-            del nets[n2]
-        if len(nets) == 1:
-            xx = bx1[0] * bx2[0]
-            break
-    # print(nets)
-    acc = xx
-    print(f"Sum: {acc}")
-
-# part1("ex.txt", 10)
-part1("input.txt", 1000)
-part2("input.txt")
+part1("input.txt")
+# part2("input.txt")
