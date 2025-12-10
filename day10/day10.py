@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import heapq
 import re
+import pulp
 
 def get_data(fname):
     a = []
@@ -58,57 +59,43 @@ def get_num_clicks(aa):
             visited[ncand] = cost_cand
     return 0
 
-# assert get_num_clicks(('.###.#', [(0,1,2,3,4), (0,3,4), (0,1,2,4,5), (1,2)], (10,11,11,5,10,5))) == 2
+assert get_num_clicks(('.###.#', [(0,1,2,3,4), (0,3,4), (0,1,2,4,5), (1,2)], (10,11,11,5,10,5))) == 2
 
-def bdiff_min(a, b):
-    return max([abs(na-nb) for na, nb in zip(a,b)])
+def get_num_clicks_pulp(aa):
+    print(aa)
+    nbtns = len(aa[1])
+    A = []
+    b = aa[2]
+    for cntidx in range(len(b)):
+        eq = []
+        for bid in range(nbtns):
+            k = 1 if cntidx in aa[1][bid] else 0
+            eq.append(k)
+        A.append(eq)
+    # print(A)
+    # print(b)
 
-def get_num_clicks2(aa):
-    # print("zzz")
-    ntargets = (aa[2])
-    ninits = [0 for _ in range(len(aa[2]))]
-    dinit = bdiff_min(ntargets, ninits)
-    visited = {tuple(ninits): 0}
-    hq = [(0, ninits)] # minimum time to finish, cost, joltage levels
-    while len(hq) > 0:
-        cost, nactuals  = heapq.heappop(hq)
-        # print(f"evaluating nactuals={nactuals}, cost={cost} ntargets={ntargets}")
-        if nactuals == ntargets:
-            # print("wtf")
-            return cost
-        for btns in aa[1]:
-            # print(f"   btns={btns}")
-            ncands = nactuals.copy()
-            ok = True
-            for idx in btns:
-                # print("    ", idx)
-                ncands[idx] = ncands[idx] + 1
-                if ncands[idx] > ntargets[idx]:
-                    # print(f"btns={btns} => idx={idx} too high")
-                    ok = False
-                    break
-            if not ok:
-                continue
-            nc_tuple = tuple(ncands)
-            cost_cand = cost + 1
-            # print("hubba: ", nc_tuple, ntargets, cost_cand, min_finish)
-            if nc_tuple in visited:
-                if visited[nc_tuple] <= cost_cand:
-                    continue
-            # print(f"   press {btns} => ncands={ncands}, cost={cost_cand}")
-            heapq.heappush(hq, (cost_cand, ncands.copy()))
-            visited[nc_tuple] = cost_cand
-    # print("Sorry")
-    return 0
+    # An external equation solver was the only thing I could come up with,
+    # but... I really dislike any task where I need to install something external
+    # and where I can't reasonably implement the thing myself in any language.
+    m, n = len(A), len(A[0])
+    prob = pulp.LpProblem("MinSum", pulp.LpMinimize)
+    x = [pulp.LpVariable(f"x{i}", lowBound=0, cat="Integer") for i in range(n)]
+    # Objective: minimize sum
+    prob += pulp.lpSum(x)
+    # Constraints: A x = b
+    for i in range(m):
+        prob += pulp.lpSum(A[i][j] * x[j] for j in range(n)) == b[i]
+    prob.solve(pulp.PULP_CBC_CMD(msg=False))
 
-# Configuring the first machine's counters requires a minimum of 10 button
-# presses. One way to do this is by pressing (3) once, (1,3) three times, (2,3)
-# three times, (0,2) once, and (0,1) twice.
-num_clicks = get_num_clicks2(('.##.', [(3,), (1,3), (2,), (2,3), (0,2), (0,1)], [3,4,5,7]))
-print(num_clicks)
+    solution = [int(pulp.value(var)) for var in x]
+    # print(solution)
+    # print(sum(solution))
+    return sum(solution)
+
+num_clicks = get_num_clicks_pulp(('.##.', [(3,), (1,3), (2,), (2,3), (0,2), (0,1)], [3,4,5,7]))
+# print(num_clicks)
 assert num_clicks == 10
-
-assert get_num_clicks2(('.###.#', [(0,1,2,3,4), (0,3,4), (0,1,2,4,5), (1,2)], [10,11,11,5,10,5])) == 11
 
 def part1(fname):
     a = get_data(fname)
@@ -123,8 +110,8 @@ def part2(fname):
     acc = 0
     for aa in a:
         print(aa)
-        acc = acc + get_num_clicks2(aa)
+        acc = acc + get_num_clicks_pulp(aa)
     print(f"Sum: {acc}")
 
-# part1("input.txt")
+part1("input.txt")
 part2("input.txt")
