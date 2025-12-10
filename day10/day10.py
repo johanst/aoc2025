@@ -64,17 +64,17 @@ def bdiff_min(a, b):
     return max([abs(na-nb) for na, nb in zip(a,b)])
 
 def get_num_clicks2(aa):
-    print("zzz")
+    # print("zzz")
     ntargets = (aa[2])
     ninits = [0 for _ in range(len(aa[2]))]
     dinit = bdiff_min(ntargets, ninits)
     visited = {tuple(ninits): 0}
-    hq = [(dinit, 0, ninits)] # minimum time to finish, cost, joltage levels
+    hq = [(0, ninits)] # minimum time to finish, cost, joltage levels
     while len(hq) > 0:
-        mf, cost, nactuals  = heapq.heappop(hq)
-        print(f"evaluating nactuals={nactuals}, cost={cost} min_finish={mf} ntargets={ntargets}")
+        cost, nactuals  = heapq.heappop(hq)
+        # print(f"evaluating nactuals={nactuals}, cost={cost} ntargets={ntargets}")
         if nactuals == ntargets:
-            print("wtf")
+            # print("wtf")
             return cost
         for btns in aa[1]:
             # print(f"   btns={btns}")
@@ -84,22 +84,21 @@ def get_num_clicks2(aa):
                 # print("    ", idx)
                 ncands[idx] = ncands[idx] + 1
                 if ncands[idx] > ntargets[idx]:
-                    print(f"btns={btns} => idx={idx} too high")
+                    # print(f"btns={btns} => idx={idx} too high")
                     ok = False
                     break
             if not ok:
                 continue
             nc_tuple = tuple(ncands)
             cost_cand = cost + 1
-            min_finish = bdiff_min(ntargets, ncands)
             # print("hubba: ", nc_tuple, ntargets, cost_cand, min_finish)
             if nc_tuple in visited:
                 if visited[nc_tuple] <= cost_cand:
                     continue
-            print(f"   press {btns} => ncands={ncands}, cost={cost_cand} min_finish={min_finish}")
-            heapq.heappush(hq, (min_finish, cost_cand, ncands.copy()))
+            # print(f"   press {btns} => ncands={ncands}, cost={cost_cand}")
+            heapq.heappush(hq, (cost_cand, ncands.copy()))
             visited[nc_tuple] = cost_cand
-    print("Sorry")
+    # print("Sorry")
     return 0
 
 # Configuring the first machine's counters requires a minimum of 10 button
@@ -123,8 +122,9 @@ def part2(fname):
     # print(a)
     acc = 0
     for aa in a:
+        print(aa)
         acc = acc + get_num_clicks2(aa)
     print(f"Sum: {acc}")
 
 # part1("input.txt")
-part2("ex.txt")
+part2("input.txt")
