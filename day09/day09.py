@@ -88,6 +88,8 @@ def part2(fname):
         vl = None
         print("--ROW--")
         is_horiz_last = False
+        turning = False
+        y2_min = None
         while len(vs) > 0:
             (_, ((_,y1), _, _)) = vs[0]
             if y1 != y:
@@ -95,15 +97,22 @@ def part2(fname):
             vn = heapq.heappop(vs)
             print(f"    {vn}")
             (_, ((x1,y1), (x2,y2), is_horiz)) = vn
+            if y2_min is None or y2 < y2_min:
+                y2_min = y2
             if is_horiz:
                 # horizontal bar, add range then done
                 rgnx.append((x1, x2))
                 is_horiz_last = True
+                turning = dirs[(x1,y1)] != dirs[(x2,y2)]
                 print(f"    horiz {x1}-{x2}")
+                print(f"    (x1,y1)={(x1,y1)}, (x2,y2)={(x2,y2)} => turning={turning}")
             else:
+                rgny.append(vn)
                 if not vl:
                     print(f"    vert {x1}")
-                    if dirs[(x1,y1)] != dirs[(x2,y2)] or not is_horiz_last:
+                    if not is_horiz_last or turning:
+                        # N.B. turning only valid when is_horiz_last == True
+                        #
                         # just rember every other vertical bar for regular walls
                         # but when preceded by a horizontal border and then
                         # moving vertically just like before we're just a
@@ -112,34 +121,35 @@ def part2(fname):
                         vl = vn
                         print(f"    vl = vn")
                 else:
-                    rgny.append(vn)
                     if not is_horiz_last:
                         # just a regular wall
                         (_, ((xl1,_), (xl2,_), _)) = vl
                         assert x1 == x2
                         assert xl1 == xl2
                         rgnx.append((xl1, x1))
+                        print(f"    vert-wall {xl1}-{x1}, vl = None")
                         vl = None
                     else:
-                        if dirs[(x1,y1)] == dirs[(x2,y2)]:
+                        if not turning:
                             # we previously started a new wall, but then came the horizontal
                             # bar and then we come to a wall moving in the same direction so
                             # we can just move the wall start (horizontal bar will cover the
                             # border)
                             vl = vn
+                            print(f"    wall-after horiz, same dir => vl = vn ({vn})")
                         else:
                             # we previously started a new wall, but now we're turning vertically
                             # so the complete wall has already been covered by the horizontal
                             # border
                             vl = None
+                            print(f"    wall-after horiz, turn dir => vl = None")
                 is_horiz_last = False
         print("rgnx: ", rgnx)
         print("rgny: ", rgny)
+        print("y2min: ", y2_min)
         assert vl == None
-        yend = y + 1
-        if len(vs) != 0:
-            (_, ((_,yend), _, _)) = vs[0]
-        yend = yend - 1
+        ynxt = max(y+1,y2_min)
+        yend = ynxt - 1
         rgs.append(((y, yend), rgnx))
         cnt_rgn_y = 0
         for vy in rgny:
@@ -148,9 +158,13 @@ def part2(fname):
                 continue
             assert yend < y2
             cnt_rgn_y = cnt_rgn_y + 1
-            heapq.heappush(vs, t2h((x1,yend+1),(x2,y2), False))
+            vy_shrunk = t2h((x1,ynxt),(x2,y2), False)
+            print(f"    re-add vy={vy_shrunk}")
+            heapq.heappush(vs, vy_shrunk)
         assert cnt_rgn_y % 2 == 0 # to verify we're only adding an even number of vertical walls
         print(f"=> rgs: {rgs[-1]}")
+    for rg in rgs:
+        print(rg)
     # print(f"Largest: {cands[0][0]}")
 
 # part1("input.txt")
