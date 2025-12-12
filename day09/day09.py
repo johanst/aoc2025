@@ -163,23 +163,23 @@ def part2(fname):
             heapq.heappush(vs, vy_shrunk)
         assert cnt_rgn_y % 2 == 0 # to verify we're only adding an even number of vertical walls
         # print(f"=> rgs: {rgs[-1]}")
-    for rg in rgs:
-        print(rg)
+    # for rg in rgs:
+    #     print(rg)
     # merge for simplicity
 
     for cand in cands:
         (area, ((x1,y1),(x2,y2))) = cand
-        print(f"candidate: {cand}")
+        # print(f"candidate: {cand}")
         ok = True
         for rg in rgs:
             ((ybeg, yend), xrgs) = rg
             if ybeg <= y2 and y1 <= yend:
-                print(f"checking y-interval {ybeg}-{yend} xrgs={xrgs}")
+                # print(f"checking y-interval {ybeg}-{yend} xrgs={xrgs}")
                 # overlap so need to check all xrng here
                 check_x = x1
                 okx = False
                 for xrg in xrgs:
-                    print(f"   check xrg={xrg}")
+                    # print(f"   check xrg={xrg}")
                     if xrg[1] < check_x:
                         continue
                     elif xrg[0] > check_x:
@@ -200,4 +200,5 @@ def part2(fname):
     print("Urrk")
 
 # part1("input.txt")
-part2("ex.txt")
+# 1562424416 too low
+part2("input.txt")
