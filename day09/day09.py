@@ -80,6 +80,7 @@ def part2(fname):
     # print(dirs)
 
     rgs=[] # (y1u, y1d), ((x1l, x1r), (x2l, x2r) ... (xnl, xnr))
+    urrk_count = 0
     while len(vs) > 0:
         # first extract all on same level
         (_, ((_, y), _, _)) = vs[0]
@@ -91,6 +92,8 @@ def part2(fname):
         turning = False
         y2_min = None
         while len(vs) > 0:
+            urrk_count = urrk_count + 1
+            assert urrk_count < 100
             (_, ((_,y1), _, _)) = vs[0]
             if y1 != y:
                 break
@@ -148,7 +151,10 @@ def part2(fname):
         # print("rgny: ", rgny)
         # print("y2min: ", y2_min)
         assert vl == None
-        ynxt = max(y+1,y2_min)
+        ynxt = y + 1
+        if len(vs) > 0:
+            (_, ((_,ynxt), _, _)) = vs[0]
+        ynxt = min(ynxt, y2_min + 1)
         yend = ynxt - 1
         rgs.append(((y, yend), rgnx))
         cnt_rgn_y = 0
@@ -156,15 +162,14 @@ def part2(fname):
             (_, ((x1,y1), (x2,y2), is_horiz)) = vy
             if yend == y2:
                 continue
-            assert yend < y2
             cnt_rgn_y = cnt_rgn_y + 1
             vy_shrunk = t2h((x1,ynxt),(x2,y2), False)
             # print(f"    re-add vy={vy_shrunk}")
             heapq.heappush(vs, vy_shrunk)
         assert cnt_rgn_y % 2 == 0 # to verify we're only adding an even number of vertical walls
-        # print(f"=> rgs: {rgs[-1]}")
-    # for rg in rgs:
-    #     print(rg)
+        print(f"=> rgs: {rgs[-1]}")
+    for rg in rgs:
+        print(rg)
     # merge for simplicity
 
     for cand in cands:
@@ -201,4 +206,4 @@ def part2(fname):
 
 # part1("input.txt")
 # 1562424416 too low
-part2("input.txt")
+part2("ex3.txt")
