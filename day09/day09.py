@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import heapq
+# import svgwrite
 
 def get_data(fname):
     a = []
@@ -36,6 +37,28 @@ def t2h(t1, t2, is_horiz):
 
 def part2(fname):
     a = get_data(fname)
+
+    # # draw svg to find out what's wrong
+    # minx = min([p[0] for p in a])
+    # maxx = max([p[0] for p in a])
+    # miny = min([p[1] for p in a])
+    # maxy = max([p[1] for p in a])
+    # height = maxy-miny
+    # width = maxx-minx
+    # print(f"{width}-{height}")
+    # # dwg = svgwrite.Drawing('polygon.svg',
+    # #                     size=('1000px', '1000px'),
+    # #                     viewBox=f'{minx} {miny} {width} {height}')
+
+    # # dwg.add(dwg.polygon(a, fill='blue'))
+    # dwg = svgwrite.Drawing('polygon_bad.svg',
+    #                     size=('1000px', '1000px'),
+    #                     viewBox=f'{minx} {miny} {width} {height}')
+
+    # dwg.add(dwg.polygon(a, fill='blue'))
+    # dwg.add(dwg.polygon(((5939,50158),(94553,50158),(94553,67789),(5939,67789)), fill='red'))
+    # dwg.save()
+    # return
 
     # get dists
     cands = []

@@ -15,3 +15,4 @@ authors = ["Your Name <email@example.com>"]
 [tool.poetry.dependencies]
 python = "^3.9"
 pulp = "^3.3.0"
+svgwrite = "^1.4.3"
