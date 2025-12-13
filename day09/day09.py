@@ -224,6 +224,84 @@ def part2(fname):
             return
     print("Urrk")
 
+# Now that I know the shape I can simplify the algorithm
+def part2_simplified(fname):
+    a = get_data(fname)
+
+    # get dists
+    cands = []
+    for i in range(len(a) - 1):
+        for j in range(i+1, len(a)):
+            if a[i][0] != a[j][0] and a[i][1] != a[j][1]:
+                # candidates are rectangles with reds in opposite corners
+                sz = rec_size(a, i, j)
+                xmin = min(a[i][0],a[j][0])
+                xmax = max(a[i][0],a[j][0])
+                ymin = min(a[i][1],a[j][1])
+                ymax = max(a[i][1],a[j][1])
+                cands.append((sz, ((xmin,ymin), (xmax,ymax))))
+                # if 94553 in (xmin, xmax):
+                #     print(cands[-1])
+    cands.sort(reverse=True)
+    # print(cands)
+
+    rgs = {} # y -> {xmin, xmax}
+    ymin = None
+    ymax = None
+    for i in range(len(a)):
+        j = (i + 1) % len(a)
+        if a[i][1] == a[j][1]:
+            # skip horizontal
+            continue
+        x = a[i][0]
+        assert x == a[j][0]
+        ybeg = min(a[i][1], a[j][1])
+        yend = max(a[i][1], a[j][1])
+        for y in range(ybeg, yend+1):
+            if y == 50168:
+                print("jepp")
+            if ymin is None or y < ymin:
+                ymin = y
+            if ymax is None or y > ymax:
+                ymax = y
+            if not y in rgs:
+                rgs[y] = (x, x)
+            else:
+                rgs[y] = (min(x, rgs[y][0]), max(x, rgs[y][1]))
+    print(ymin, ymax)
+    assert len(rgs) == ymax - ymin + 1
+
+    numcross = 0
+    numpossible = 0
+    numupper = 0
+    numlower = 0
+    for cand in cands:
+        (area, ((x1,y1),(x2,y2))) = cand
+        ok = True
+        if y1 <= 48602 and y2 >= 50158:
+            numcross = numcross + 1
+            ok = False
+        else:
+            if 50158 in (y1,y2):
+                numupper = numupper + 1
+            elif 48602 in (y1,y2):
+                numlower = numlower + 1
+            numpossible = numpossible + 1
+            for y in range(y1, y2 + 1):
+                if x1 < rgs[y][0] or x2 > rgs[y][1]:
+                    ok = False
+                    break
+                if not ok:
+                    break
+        # print(f"candidate: {cand}")
+        if ok:
+            print(f"Largest: {cand}")
+            return
+    print(numcross, numpossible, numlower, numupper)
+    print("Urrk")
+
+
 # part1("input.txt")
 # 1562424416 too low
-part2("input.txt")
+# part2("input.txt")
+part2_simplified("input.txt")
