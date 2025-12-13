@@ -234,11 +234,11 @@ def part2_simplified(fname):
         for j in range(i+1, len(a)):
             if a[i][0] != a[j][0] and a[i][1] != a[j][1]:
                 # candidates are rectangles with reds in opposite corners
-                sz = rec_size(a, i, j)
                 xmin = min(a[i][0],a[j][0])
                 xmax = max(a[i][0],a[j][0])
                 ymin = min(a[i][1],a[j][1])
                 ymax = max(a[i][1],a[j][1])
+                sz = (xmax - xmin + 1) * (ymax - ymin + 1)
                 cands.append((sz, ((xmin,ymin), (xmax,ymax))))
                 # if 94553 in (xmin, xmax):
                 #     print(cands[-1])
